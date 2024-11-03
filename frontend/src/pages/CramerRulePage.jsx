@@ -2,7 +2,7 @@ import React from 'react'
 import NumericalNavbar from './Navbar';
 import Cramer from '../components/AXB/cramer'
 
-function CramerRulePage(){ 
+export default function CramerRulePage(){ 
     return(
         <div>
             <NumericalNavbar/>
@@ -10,4 +10,3 @@ function CramerRulePage(){
         </div>
     )
 }
-export default CramerRulePage;
