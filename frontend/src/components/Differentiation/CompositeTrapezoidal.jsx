@@ -3,7 +3,6 @@ import { Button, Container, Form, Table } from "react-bootstrap";
 import { evaluate } from 'mathjs'
 //import axios from "axios";
 // math.import(require('mathjs-simple-integral'));
-
 function CompositeTrapezoidalRule() {
 
     const recur = (round, base, H) => {
@@ -25,7 +24,7 @@ function CompositeTrapezoidalRule() {
 
     const calError = (xold, xnew) => Math.abs((xnew - xold) / xnew) * 100;
 
-    const CalCompositeTrapezoidalRule = () => {
+    const CalCompositeTrapezoidalRule = async() => {
 
         let a = A, b = B, n = N;
         let H = (b - a) / n;
@@ -34,6 +33,19 @@ function CompositeTrapezoidalRule() {
         let error = calError(output, integral);
 
         setX(output);
+        const payload = {
+            functionmain: Equation,
+            inputa: a,
+            inputb:b,
+            inputn:n,
+            method: "CompositeTrapezoidal",
+          };
+      
+          //2 create function fetch
+          await fetch(`${import.meta.env.VITE_BACKEND_URL}/differentiation`, {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
     }
 
     const [Equation, setEquation] = useState("(4*x^5) - (3*x^4) + (x^3) - (6*x) + 2")

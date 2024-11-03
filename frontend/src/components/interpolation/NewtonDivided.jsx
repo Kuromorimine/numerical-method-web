@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Form, Button, Row, Col, InputGroup, Container } from "react-bootstrap";
 import Table from 'react-bootstrap/Table';
 
+const backEndUrl = "http://localhost:3000";
 class NewtonDivided extends Component {
     constructor(props) {
         super(props);
@@ -99,7 +100,7 @@ class NewtonDivided extends Component {
         }
     }
 
-    calculator = () => {
+    calculator = async() => {
         let output;
         let iter = this.state.level - 1;
         let input = this.state.xInput;
@@ -122,6 +123,22 @@ class NewtonDivided extends Component {
 
         output = this.calNewY(C, input, X, iter);
         this.setState({ result: output });
+        const payload = {
+            sizearray:this.state.size,
+            arrayx: this.state.dataX,
+            arrayy:this.state.dataY,
+            inputindex:this.state.level,
+            indexleft:this.state.selectedIndex[0],
+            indexright:this.state.selectedIndex[1],
+            inputx:this.state.xInput,
+            method: "newtondivided",
+          };
+      
+          //2 create function fetch
+          await fetch(`${backEndUrl}/interpolation`, {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
     }
 
     render() {

@@ -22,15 +22,48 @@ model RootOfEquation {
 }
 model AXB{
   id Int @id @default(autoincrement())
-  sizecolumn Int  
-  sizerow Int
+  size Int  
   matrixA  Json
   matrixB Json
   method String @db.VarChar(255)
 }
 model Differentiation{
   id Int @id @default(autoincrement())
-  function String  @db.VarChar(255)
+  functionmain String @db.VarChar(255)
+  inputa Int
+  inputb Int
+  inputn Int?
+  method String @db.VarChar(255)
+}
+model Regression{
+  id Int @id @default(autoincrement())
+  sizearray Int
+  inputx String @db.VarChar(255)
+  m String? @db.VarChar(255)
+  regressionarrayx Json
+  regressionarrayy Json
+  method String @db.VarChar(255)
+}
+model Interpolation{
+  id Int @id @default(autoincrement())
+  sizearray Int
+  arrayx Json
+  arrayy Json
+  inputindex Int
+  indexleft Int
+  indexright Int
+  inputx Int
+  
+  method String @db.VarChar(255)
+}
+model Spline{
+  id Int @id @default(autoincrement())
+  splinetype String @db.VarChar(255)
+  points String @db.VarChar(255)
+  x0 Json
+  fx0 Json
+  xtarget String @db.VarChar(255)
+
 }
 //npx prisma migrate dev
 //npx prisma generate

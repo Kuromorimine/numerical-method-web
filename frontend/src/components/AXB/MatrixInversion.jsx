@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Form, Button, Row, Col, InputGroup } from "react-bootstrap";
 import { useState } from "react";
 
+const backEndUrl = "http://localhost:3000";
 function MatrixInversion() {
     const [matrix, setMatrix] = useState([[-2,3,1],[3,4,-5], [1,-2,1]]);
     const [b, setB] = useState([9,0,-4])
@@ -41,12 +42,24 @@ function MatrixInversion() {
         setB(newB);
     }
 
-    const calculator = ()=> {
+    const calculator = async()=> {
         let mtx = JSON.parse(JSON.stringify(matrix));
         let output = JSON.parse(JSON.stringify(b));
         let MatrixInversionResult = [];
         MatrixInversionResult = MatrixInversion(mtx,output);
         setResult(MatrixInversionResult);
+        const payload = {
+            size:size,
+            matrixA:matrix,
+            matrixB:b,
+            method: "matrixinversion",
+          };
+      
+          //2 create function fetch
+          await fetch(`${backEndUrl}/matrix`, {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
     }
 
     const MatrixInversion = (m,matrixB)=> {

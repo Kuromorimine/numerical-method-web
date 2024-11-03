@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Spline" ALTER COLUMN "xtarget" SET DATA TYPE VARCHAR(255);

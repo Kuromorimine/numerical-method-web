@@ -3,7 +3,7 @@ import { Button, Container, Form, Table } from "react-bootstrap";
 import { evaluate } from 'mathjs'
 //import axios from "axios";
 // math.import(require('mathjs-simple-integral'));
-
+const backEndUrl = "http://localhost:3000";
 function CompositeSimpsonsRule() {
 
     const recur = (round, base, H, last) => {
@@ -25,7 +25,7 @@ function CompositeSimpsonsRule() {
 
     const calError = (xold, xnew) => Math.abs((xnew - xold) / xnew) * 100;
 
-    const CalCompositeSimpsonsRule = () => {
+    const CalCompositeSimpsonsRule = async() => {
 
         let a = A, b = B, n = N;
         let H = (b - a) / parseInt(n);
@@ -34,6 +34,19 @@ function CompositeSimpsonsRule() {
         let error = calError(output, integral);
 
         setX(output);
+        const payload = {
+            functionmain: Equation,
+            inputa: a,
+            inputb:b,
+            inputn:n,
+            method: "CompositeSimpson",
+          };
+      
+          //2 create function fetch
+          await fetch(`${backEndUrl}/differentiation`, {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
     }
 
     const [Equation, setEquation] = useState("x^7 + 2*x^3 - 1")

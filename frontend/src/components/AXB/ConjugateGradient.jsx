@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Form, Button, Row, Col, InputGroup } from "react-bootstrap";
 import { useState } from "react";
 
+const backEndUrl = "http://localhost:3000";
 function ConjugateGradient() {
     const [matrix, setMatrix] = useState([[-2,3,1],[3,4,-5], [1,-2,1]]);
     const [b, setB] = useState([9,0,-4])
@@ -150,7 +151,7 @@ function ConjugateGradient() {
         }
     }
 
-    const calculator = ()=> {
+    const calculator = async()=> {
         let arr = JSON.parse(JSON.stringify(matrix));
         let output = JSON.parse(JSON.stringify(b));
         let X = [];
@@ -183,6 +184,18 @@ function ConjugateGradient() {
         }
         console.log(iter)
         setResult(X);
+        const payload = {
+            size:size,
+            matrixA:matrix,
+            matrixB:b,
+            method: "conjugate",
+          };
+      
+          //2 create function fetch
+          await fetch(`${backEndUrl}/matrix`, {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
     }
     
     return(

@@ -1,14 +1,17 @@
 import React from "react";
 import { Form, Button, Row, Col, InputGroup, Container } from "react-bootstrap";
 import Table from 'react-bootstrap/Table';
-import { useState } from "react";
+import { useEffect,useState } from "react";
+import History from "./history";
 
+const backEndUrl = "http://localhost:3000";
 function LinearLeastSquares() {
     const [dataX, setDataX] = useState([10,15,20,30,40,50,60,70,80]);
     const [dataY, setDataY] = useState([5,9,15,18,22,30,35,38,43]);
     const [xInput, setXInput] = useState(0)
     const [size, setSize] = useState(9);
     const [result, setResult] = useState(0);
+    const [allEquations, setAllEquations] = useState([]);
 
     const inputSize = (event)=> {
         if (event.target.value >= 2) {
@@ -102,7 +105,7 @@ function LinearLeastSquares() {
         return output;
     }
 
-    const calculator = ()=> {
+      const calculator =async ()=> {
         let output;
         let input = xInput;
         let X = [...dataX];
@@ -111,8 +114,33 @@ function LinearLeastSquares() {
         output = linear(X,Y,input)
 
         setResult(output);
+        const payload = {
+            sizearray: size,
+            inputx: xInput,
+            regressionarrayx:dataX,
+            regressionarrayy:dataY,
+            method: "linear",
+          };
+      
+          //2 create function fetch
+          await fetch(`${backEndUrl}/regression`, {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
     }
-
+    useEffect(() => {
+        const getAllData = async () => {
+          const response = await fetch(`${backEndUrl}/regression`, {
+            method: "GET",
+          });
+    
+          const data = await response.json();
+          console.log(data.data);
+          setAllEquations(data.data.filter((element) => element.method == 'linear'));
+        };
+    
+        getAllData();
+      }, []);
     return(
         <Container>
                 <form>
@@ -179,12 +207,13 @@ function LinearLeastSquares() {
                             <Button variant="primary" onClick={calculator} >Calculate</Button>
                         </Col>
                     </Container>
-                    
+                   
                 </form>
                 <Container className="text-center">
                     <h3>Answer = {parseFloat(result)}</h3>
+                    <History allEquations={allEquations}/>
                 </Container>
-            
+                
         </Container>
         
     )

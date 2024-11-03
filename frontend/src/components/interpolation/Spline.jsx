@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Container, Card, Row, Col, Form, Button, ButtonGroup, ToggleButton, ToggleButtonGroup, InputGroup } from "react-bootstrap";
 
+const backEndUrl = "http://localhost:3000";
 function Spline() {
     const [splineType, setSplineType] = useState("Linear");
     const [points, setPoints] = useState([{x: 0,y: 0,}]);
@@ -45,7 +46,7 @@ function Spline() {
       setxTarget(event.target.value);
     }
   
-    const calculator = ()=> {
+    const calculator = async()=> {
       let answer;
       let targetX = parseFloat(xTarget);
       const newInputs = {
@@ -63,6 +64,20 @@ function Spline() {
         answer = CalCubicSpline(points, targetX);
       }
       setResult(answer);
+
+      const payload = {
+        splinetype:splineType,
+        points:size,
+        x0:points[0],
+        fx0:points[1],
+        xtarget:xTarget
+      };
+  
+      //2 create function fetch
+      await fetch(`${backEndUrl}/spline`, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
     }
 
     function CalLinearSpline(points, targetX) {

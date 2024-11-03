@@ -1,8 +1,10 @@
 import React, { Component } from "react";
 import { Button, Container, Form } from "react-bootstrap";
 import { evaluate } from 'mathjs';
+
 //import axios from 'axios';
 
+const backEndUrl = "http://localhost:3000";
 class TrapezoidalRule extends Component {
     constructor() {
         super();
@@ -37,7 +39,7 @@ class TrapezoidalRule extends Component {
 
     calError = (xold, xnew) => Math.abs((xnew - xold) / xnew) * 100;
 
-    CalTrapezoidalRule = () => {
+    CalTrapezoidalRule =async () => {
         let a = parseFloat(this.state.A);
         let b = parseFloat(this.state.B);
 
@@ -46,8 +48,21 @@ class TrapezoidalRule extends Component {
         let error = this.calError(output, integral);
 
         this.setState({ X: output });
+        const payload = {
+            functionmain: this.state.Equation,
+            inputa: a,
+            inputb:b,
+            
+            method: "Trapezoidal",
+          };
+      
+          //2 create function fetch
+          await fetch(`${backEndUrl}/differentiation`, {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
     }
-
+    
     render() {
         return (
             <Container>

@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Form, Button, Row, Col, InputGroup } from "react-bootstrap";
 import { useState } from "react";
 
+const backEndUrl = "http://localhost:3000";
 function Jacobi() {
     const [matrix, setMatrix] = useState([[5,2,0,0],[2,5,2,0], [0,2,5,2], [0,0,2,5]]);
     const [b, setB] = useState([12,17,14,7])
@@ -60,7 +61,7 @@ function Jacobi() {
             xnew[j] = parseFloat(xnew[j]) / parseFloat(mtx[j][j]);
         }
     }
-    const calculator = ()=> {
+    const calculator = async()=> {
         let mtx = JSON.parse(JSON.stringify(matrix));
         let output = JSON.parse(JSON.stringify(b));
         let X = [];
@@ -77,6 +78,18 @@ function Jacobi() {
             setNum(Xold,X,output,mtx);
         } while (checkError(Xold,X,eps));
         setResult(X);
+        const payload = {
+            size:size,
+            matrixA:matrix,
+            matrixB:b,
+            method: "jacobi",
+          };
+      
+          //2 create function fetch
+          await fetch(`${backEndUrl}/matrix`, {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
     }
 
 

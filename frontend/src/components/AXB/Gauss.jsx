@@ -2,6 +2,7 @@ import React from "react";
 import { Card, Form, Button, Row, Col, InputGroup } from "react-bootstrap";
 import { useState } from "react";
 
+const backEndUrl = "http://localhost:3000";
 function Gaussian() {
     const [matrix, setMatrix] = useState([[-2,3,1],[3,4,-5], [1,-2,1]]);
     const [b, setB] = useState([9,0,-4])
@@ -41,12 +42,24 @@ function Gaussian() {
         setB(newB);
     }
 
-    const calculator = ()=> {
+    const calculator = async()=> {
         let mtx = JSON.parse(JSON.stringify(matrix));
         let output = [...b];
         let GaussianResult = [];
         GaussianResult = gaussian(mtx,output);
         setResult(GaussianResult);
+        const payload = {
+            size:size,
+            matrixA:matrix,
+            matrixB:b,
+            method: "gauss",
+          };
+      
+          //2 create function fetch
+          await fetch(`${backEndUrl}/matrix`, {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
     }
 
     const gaussian = (m,matrixB)=> {
