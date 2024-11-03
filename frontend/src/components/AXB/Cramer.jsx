@@ -76,56 +76,57 @@ function Cramer() {
     }
 
     return(
-        <Card>
-            <h1>Cramer Rule</h1>
-            <Card.Body>
-                <Form>
-                    <Form.Group as={Row} className="mb-3">
-                        <Col xs={3}>
-                            <Form.Label>Matrix size</Form.Label>
-                            <InputGroup>
-                                <Form.Control type="number" value={size} onChange={(e)=> {inputSize(e)}}></Form.Control>
-                                <Button variant="secondary" onClick={inputMatrixSize}>Set</Button>
-                            </InputGroup>
+        // <Card>
+        //     <h1>Cramer Rule</h1>
+        //     <Card.Body>
+        //         <Form>
+        //             <Form.Group as={Row} className="mb-3">
+        //                 <Col xs={3}>
+        //                     <Form.Label>Matrix size</Form.Label>
+        //                     <InputGroup>
+        //                         <Form.Control type="number" value={size} onChange={(e)=> {inputSize(e)}}></Form.Control>
+        //                         <Button variant="secondary" onClick={inputMatrixSize}>Set</Button>
+        //                     </InputGroup>
                             
-                        </Col>
-                    </Form.Group>
-                    <Form.Group as={Row} className="mb-3">
-                        <Col>
-                            <Form.Label>A</Form.Label>
-                            {matrix.map((row, rowIndex)=> (
-                                <InputGroup key={rowIndex}>
-                                    {matrix[rowIndex].map((col, colIndex)=> (
-                                        <Form.Control key={colIndex} value={matrix[rowIndex][colIndex]} onChange={(e)=> changeMatrix(e, rowIndex, colIndex)}></Form.Control>
-                                    ))}
-                                </InputGroup>
-                            ))}
-                        </Col>
-                        <Col xs={1}>
-                            <Form.Label>x</Form.Label>
-                            {matrix.map((row, rowIndex)=> (
-                                <Form.Group key={rowIndex}>
-                                    <Form.Control className="text-center" value={`x${rowIndex}`} disabled></Form.Control>
-                                </Form.Group>
-                            ))}
-                        </Col>
-                        <Col xs={1}>
-                            <Form.Label>b</Form.Label>
-                            {b.map((row, index)=> (
-                                <Form.Group key={index}>
-                                    <Form.Control className="text-center" value={b[index]} onChange={(e)=> inputB(e, index)}></Form.Control>
-                                </Form.Group>
-                            ))}
-                        </Col>
+        //                 </Col>
+        //             </Form.Group>
+        //             <Form.Group as={Row} className="mb-3">
+        //                 <Col>
+        //                     <Form.Label>A</Form.Label>
+        //                     {matrix.map((row, rowIndex)=> (
+        //                         <InputGroup key={rowIndex}>
+        //                             {matrix[rowIndex].map((col, colIndex)=> (
+        //                                 <Form.Control key={colIndex} value={matrix[rowIndex][colIndex]} onChange={(e)=> changeMatrix(e, rowIndex, colIndex)}></Form.Control>
+        //                             ))}
+        //                         </InputGroup>
+        //                     ))}
+        //                 </Col>
+        //                 <Col xs={1}>
+        //                     <Form.Label>x</Form.Label>
+        //                     {matrix.map((row, rowIndex)=> (
+        //                         <Form.Group key={rowIndex}>
+        //                             <Form.Control className="text-center" value={`x${rowIndex}`} disabled></Form.Control>
+        //                         </Form.Group>
+        //                     ))}
+        //                 </Col>
+        //                 <Col xs={1}>
+        //                     <Form.Label>b</Form.Label>
+        //                     {b.map((row, index)=> (
+        //                         <Form.Group key={index}>
+        //                             <Form.Control className="text-center" value={b[index]} onChange={(e)=> inputB(e, index)}></Form.Control>
+        //                         </Form.Group>
+        //                     ))}
+        //                 </Col>
                         
-                    </Form.Group>
-                    <Button variant="primary" onClick={calculator}>Calculate</Button>
-                </Form>
-            </Card.Body>
-            {result.map((x, index)=> (
-                <Card.Footer key={index}>x{index}: {x}</Card.Footer>
-            ))}
-        </Card>
+        //             </Form.Group>
+        //             <Button variant="primary" onClick={calculator}>Calculate</Button>
+        //         </Form>
+        //     </Card.Body>
+        //     {result.map((x, index)=> (
+        //         <Card.Footer key={index}>x{index}: {x}</Card.Footer>
+        //     ))}
+        // </Card>
+        <h1>hello</h1>
     )
 }
 
