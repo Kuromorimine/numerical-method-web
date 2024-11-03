@@ -1,5 +1,5 @@
 import React from 'react'
-import NumericalNavbar from '../Navbar';
+import NumericalNavbar from './Navbar';
 import Gaussian from '../components/AXB/Gauss'
 
 export default function GaussPage() {

@@ -1,5 +1,5 @@
 import React from 'react'
-import NumericalNavbar from '../Navbar';
+import NumericalNavbar from './Navbar';
 import LU from '../components/AXB/LU'
 
 export default function LUPage() {

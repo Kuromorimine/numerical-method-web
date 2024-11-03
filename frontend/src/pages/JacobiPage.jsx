@@ -1,5 +1,5 @@
 import React from 'react'
-import NumericalNavbar from '../Navbar';
+import NumericalNavbar from './Navbar';
 import Jacobi from '../components/AXB/Jacobi'
 
 export default function JacobiPage() {

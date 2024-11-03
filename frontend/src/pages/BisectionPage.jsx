@@ -1,6 +1,6 @@
 import React from 'react'
 import Bisection from '../components/rootofequation/Bisection'
-import NumericalNavbar from '../Navbar';
+import NumericalNavbar from './Navbar';
 
 export default function BisectionPage() {
   return (

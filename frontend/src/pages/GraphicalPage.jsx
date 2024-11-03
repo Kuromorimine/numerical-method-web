@@ -1,6 +1,6 @@
 import React from 'react'
 import Graphical from '../components/rootofequation/Graphical'
-import NumericalNavbar from '../Navbar';
+import NumericalNavbar from './Navbar';
 
 
 export default function GraphicalPage() {
