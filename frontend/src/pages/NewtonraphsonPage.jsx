@@ -1,13 +1,14 @@
 import React from 'react'
 
-import { Link } from 'react-router-dom'
-import Newtonraphson from '../components/Newtonraphson'
+import NumericalNavbar from '../Navbar';
+import Newtonraphson from '../components/rootofequation/Newtonraphson'
+
 
 
 export default function NewtonraphsonPage() {
   return (
     <div>
-      <Link to="/">Home</Link>
+      <NumericalNavbar/>
       <Newtonraphson/>
     </div>
     

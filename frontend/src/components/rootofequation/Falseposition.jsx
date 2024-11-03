@@ -1,7 +1,10 @@
 import { compile } from "mathjs";
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import Plot from 'react-plotly.js'
 import Table from "react-bootstrap/Table";
+import History from "./history";
+
+const backEndUrl = "http://localhost:3000";
 function FalsepositionMain(Rangexl, Rangexr, Epsilon, Fn){
     function xm(xl,xr){
         return ((xl*fn.evaluate({x:xr}))-(xr*fn.evaluate({x:xl})))/(fn.evaluate({x:xr})-fn.evaluate({x:xl}));
@@ -42,8 +45,9 @@ function Falseposition(){
     const [dataY,setdataY]=useState(null);
     const [dataErr,setdataErr]=useState(null);
     const [iteration,setiteration]=useState(null);
+    const [allEquations, setAllEquations] = useState([]);
 
-    function eventHandler(e) {
+    async function eventHandler(e) {
         e.preventDefault();
         console.log(Rangexl);
         console.log(Rangexr);
@@ -54,43 +58,72 @@ function Falseposition(){
         setdataY(result.dataYset);
         setiteration(result.iter);
         setdataErr(result.dataErrset);
-  }
 
+        const payload = {
+          function: FnState,
+          start: Rangexl,
+          stop: Rangexr,
+          method: "falseposition",
+        };
+
+        await fetch(`${backEndUrl}/root-of-equation`, {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+  }
+  useEffect(() => {
+    const getAllData = async () => {
+      const response = await fetch(`${backEndUrl}/root-of-equation`, {
+        method: "GET",
+      });
+
+      const data = await response.json();
+      
+      setAllEquations(data.data.filter((element) => element.method == 'falseposition'));
+    };
+
+    getAllData();
+  }, []);
   return (
     <div className="Main">
-      <h1>FalsePosition</h1>
-      <form onSubmit={eventHandler}>
-        <label>f(x)</label>
-        <input
-          type="text"
-          placeholder="Enter the function"
-          value={FnState}
-          onChange={(e) => setFn(e.target.value)}
-        />
-        <p></p>
-        <label>Range</label>
-        <input
-          type="text"
-          value={Rangexl}
-          onChange={(e) => setRangexl(e.target.value)}
-        />
-        <label>,</label>
-        <input
-          type="text"
-          value={Rangexr}
-          onChange={(e) => setRangexr(e.target.value)}
-        />
-        <p></p>
-        <label>Epsilon</label>
-        <input
-          type="text"
-          value={Epsilon}
-          onChange={(e) => setEpsilon(e.target.value)}
-        />
-        <p></p>
-        <button type="submit">Submit</button>
-        <p>Ans is {Ans} and iteration is {iteration}</p>
-      </form>
+      <div className="d-flex justify-content-between" style={{height: 300+"px"}}>
+        <div>
+          <h1>FalsePosition</h1>
+          <form onSubmit={eventHandler}>
+            <label>f(x)</label>
+            <input
+              type="text"
+              placeholder="Enter the function"
+              value={FnState}
+              onChange={(e) => setFn(e.target.value)}
+            />
+            <p></p>
+            <label>Range</label>
+            <input
+              type="text"
+              value={Rangexl}
+              onChange={(e) => setRangexl(e.target.value)}
+            />
+            <label>,</label>
+            <input
+              type="text"
+              value={Rangexr}
+              onChange={(e) => setRangexr(e.target.value)}
+            />
+            <p></p>
+            <label>Epsilon</label>
+            <input
+              type="text"
+              value={Epsilon}
+              onChange={(e) => setEpsilon(e.target.value)}
+            />
+            <p></p>
+            <button type="submit">Submit</button>
+            <p>Ans is {Ans} and iteration is {iteration}</p>
+          </form>
+        </div>
+        <History allEquations={allEquations}/>
+      </div>
       <div>
       <Plot 
         data={[
@@ -110,7 +143,7 @@ function Falseposition(){
         config={{
           scrollZoom:true
         }}
-        layout={ {width: 1280, height: 450, title: 'Bisection'} }
+        layout={ {width: 1280, height: 450, title: 'FalsePosition'} }
           
       />
       </div>

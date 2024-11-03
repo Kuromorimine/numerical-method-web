@@ -1,11 +1,11 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import NumericalNavbar from '../Navbar';
 import Gaussian from '../components/AXB/Gauss'
 
 export default function GaussPage() {
   return (
     <div>
-        <Link to="/">Home</Link>
+        <NumericalNavbar/>
         <Gaussian/>
     </div>
   )

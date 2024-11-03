@@ -1,11 +1,11 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import NumericalNavbar from '../Navbar';
 import Cramer from '../components/AXB/cramer'
 
 function CramerRulePage(){ 
     return(
         <div>
-            <Link to="/">Home</Link>
+            <NumericalNavbar/>
             <Cramer/>
         </div>
     )

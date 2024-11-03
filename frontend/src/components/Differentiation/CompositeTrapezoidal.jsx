@@ -75,11 +75,7 @@ function CompositeTrapezoidalRule() {
                     <input type="number" id="N" onChange={inputN} style={{ width: "20%", margin: "0 auto" }} className="form-control"></input>
                 </Form.Group>
                 <Container className="text-center">
-                    <Button onClick={() => {
-                        axios.get("http://localhost:8080/compositetrapezoidal").then(e => {
-                            setEquation(e.data[0].equation);
-                        })
-                    }}>get F(x)</Button>
+                
                     <Button variant="dark" onClick={CalCompositeTrapezoidalRule}>
                         Calculate
                     </Button>

@@ -1,7 +1,9 @@
 import { compile } from "mathjs";
-import { useState } from "react";
-
+import { useEffect,useState } from "react";
+import History from "./history";
 import Plot from 'react-plotly.js'
+
+const backEndUrl = "http://localhost:3000";
 function SecantMain(Rangex0,Rangex1,Epsilon, Fn){
     const fn=compile(Fn);
     
@@ -39,7 +41,10 @@ function Secant(){
     const [Epsilon, setEpsilon] = useState("");
     const [dataX,setdataX]=useState(null);
     const [dataY,setdataY]=useState(null);
-    function eventHandler(e) {
+    const [allEquations, setAllEquations] = useState([]);
+
+
+    async function eventHandler(e) {
         e.preventDefault();
         console.log(Rangex0);
         console.log(Rangex1);
@@ -48,44 +53,73 @@ function Secant(){
         setAns(result.ans); // Set the result using setAns
         setdataX(result.dataXset);
         setdataY(result.dataYset);
+
+        const payload = {
+          function: FnState,
+          start: Rangex0,
+          stop:Rangex1,
+          method: "Secant",
+        };
+
+        await fetch(`${backEndUrl}/root-of-equation`, {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
   }
-  
+  useEffect(() => {
+    const getAllData = async () => {
+      const response = await fetch(`${backEndUrl}/root-of-equation`, {
+        method: "GET",
+      });
+
+      const data = await response.json();
+      
+      setAllEquations(data.data.filter((element) => element.method == 'Secant'));
+    };
+
+    getAllData();
+  }, []);
   return (
     <div className="Main">
-      <h1>Secant</h1>
-      <form onSubmit={eventHandler}>
-        <label>f(x)</label>
-        <input
-          type="text"
-          placeholder="Enter the function"
-          value={FnState}
-          onChange={(e) => setFn(e.target.value)}
-        />
-        <p></p>
-        <label>Start</label>
-        <input
-          type="text"
-          value={Rangex0}
-          placeholder="Enter X0"
-          onChange={(e) => setRangex0(e.target.value)}
-        />
-        <input
-          type="text"
-          value={Rangex1}
-          placeholder="Enter X1"
-          onChange={(e) => setRangex1(e.target.value)}
-        />
-        <p></p>
-        <label>Epsilon</label>
-        <input
-          type="text"
-          value={Epsilon}
-          onChange={(e) => setEpsilon(e.target.value)}
-        />
-        <p></p>
-        <button type="submit">Submit</button>
-        <p>{Ans}</p>
-      </form>
+      <div className="d-flex justify-content-between" style={{height: 300+"px"}}>
+        <div>
+          <h1>Secant</h1>
+          <form onSubmit={eventHandler}>
+            <label>f(x)</label>
+            <input
+              type="text"
+              placeholder="Enter the function"
+              value={FnState}
+              onChange={(e) => setFn(e.target.value)}
+            />
+            <p></p>
+            <label>Start</label>
+            <input
+              type="text"
+              value={Rangex0}
+              placeholder="Enter X0"
+              onChange={(e) => setRangex0(e.target.value)}
+            />
+            <input
+              type="text"
+              value={Rangex1}
+              placeholder="Enter X1"
+              onChange={(e) => setRangex1(e.target.value)}
+            />
+            <p></p>
+            <label>Epsilon</label>
+            <input
+              type="text"
+              value={Epsilon}
+              onChange={(e) => setEpsilon(e.target.value)}
+            />
+            <p></p>
+            <button type="submit">Submit</button>
+            <p>{Ans}</p>
+          </form>
+        </div>
+        <History allEquations={allEquations}/>
+      </div>
       <div>
       <Plot 
         data={[

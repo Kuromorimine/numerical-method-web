@@ -1,11 +1,12 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import NumericalNavbar from '../Navbar';
 import CompositeSimpsonsRule from '../components/Differentiation/CompositeSimpson'
 
 export default function CompositeSimpsonPage() {
   return (
     <div>
-        <Link to="/">Home</Link>
+        {/* <NumericalNavbar/> */}
+        <NumericalNavbar/>
         <CompositeSimpsonsRule/>
     </div>
   )

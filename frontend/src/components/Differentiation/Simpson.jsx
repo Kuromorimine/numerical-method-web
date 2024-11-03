@@ -63,11 +63,7 @@ class SimpsonsRule extends Component {
                         <input type="number" id="A" onChange={this.inputA} style={{ width: "20%", margin: "0 auto" }} className="form-control" />
                     </Form.Group>
                     <Container className="text-center">
-                        <Button onClick={() => {
-                            axios.get("http://localhost:8080/simpsons").then(e => {
-                                this.setState({ Equation: e.data[0].equation });
-                            });
-                        }}>get F(x)</Button>
+                        
                         <Button variant="dark" onClick={this.CalSimpsonsRule}>
                             Calculate
                         </Button>

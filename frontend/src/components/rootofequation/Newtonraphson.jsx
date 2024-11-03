@@ -1,8 +1,10 @@
 import { compile } from "mathjs";
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import Plot from 'react-plotly.js'
 import Table from "react-bootstrap/Table";
+import History from "./history";
 
+const backEndUrl = "http://localhost:3000";
 function NewtonraphsonMain(Rangexl,Epsilon, FnState1,FnState2){
     const fn1=compile(FnState1);
     const fn2=compile(FnState2);
@@ -44,8 +46,9 @@ function Newtonraphson(){
     const [dataY,setdataY]=useState(null);
     const [dataErr,setdataErr]=useState(null);
     const [iteration,setiteration]=useState(null);
+    const [allEquations, setAllEquations] = useState([]);
 
-    function eventHandler(e) {
+    async function eventHandler(e) {
         e.preventDefault();
         console.log(Rangexl);
         
@@ -56,46 +59,75 @@ function Newtonraphson(){
         setdataY(result.dataYset);
         setiteration(result.iter);
         setdataErr(result.dataErrset);
+
+        const payload = {
+          function: FnState1,
+          start: Rangexl,
+
+          method: "newtonraphson",
+        };
+
+        await fetch(`${backEndUrl}/root-of-equation`, {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
   }
-  
+  useEffect(() => {
+    const getAllData = async () => {
+      const response = await fetch(`${backEndUrl}/root-of-equation`, {
+        method: "GET",
+      });
+
+      const data = await response.json();
+      
+      setAllEquations(data.data.filter((element) => element.method == 'newtonraphson'));
+    };
+
+    getAllData();
+  }, []);
   return (
     <div className="Main">
-      <h1>NewtonRapAke</h1>
-      <form onSubmit={eventHandler}>
-        <label>f(x)</label>
-        <input
-          type="text"
-          placeholder="Enter the function 1"
-          value={FnState1}
-          onChange={(e) => setFn1(e.target.value)}
-        />
-        <p></p>
-        <label>f'(x)</label>
-        <input
-          type="text"
-          placeholder="Enter diff the function 1"
-          value={FnState2}
-          onChange={(e) => setFn2(e.target.value)}
-        />
-        <p></p>
-        <label>Start</label>
-        <input
-          type="text"
-          value={Rangexl}
-          onChange={(e) => setRangexl(e.target.value)}
-        />
-        
-        <p></p>
-        <label>Epsilon</label>
-        <input
-          type="text"
-          value={Epsilon}
-          onChange={(e) => setEpsilon(e.target.value)}
-        />
-        <p></p>
-        <button type="submit">Submit</button>
-        <p>Ans is {Ans} and iteration is {iteration}</p>
-      </form>
+      <div className="d-flex justify-content-between" style={{height: 300+"px"}}>
+        <div>
+          <h1>NewtonRapAke</h1>
+          <form onSubmit={eventHandler}>
+            <label>f(x)</label>
+            <input
+              type="text"
+              placeholder="Enter the function 1"
+              value={FnState1}
+              onChange={(e) => setFn1(e.target.value)}
+            />
+            <p></p>
+            <label>f'(x)</label>
+            <input
+              type="text"
+              placeholder="Enter diff the function 1"
+              value={FnState2}
+              onChange={(e) => setFn2(e.target.value)}
+            />
+            <p></p>
+            <label>Start</label>
+            <input
+              type="text"
+              value={Rangexl}
+              onChange={(e) => setRangexl(e.target.value)}
+            />
+          
+            <p></p>
+            <label>Epsilon</label>
+            <input
+              type="text"
+              value={Epsilon}
+              onChange={(e) => setEpsilon(e.target.value)}
+            />
+            <p></p>
+            <button type="submit">Submit</button>
+            <p>Ans is {Ans} and iteration is {iteration}</p>
+          </form>
+        </div>
+        <History allEquations={allEquations}/>
+      </div>
       <div>
       <Plot 
         data={[

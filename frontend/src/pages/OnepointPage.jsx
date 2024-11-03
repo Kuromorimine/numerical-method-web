@@ -1,13 +1,13 @@
 import React from 'react'
 
-import { Link } from 'react-router-dom'
+import NumericalNavbar from '../Navbar';
 import Onepoint from '../components/rootofequation/Onepoint'
 
 
 export default function OnepointPage() {
   return (
     <div>
-      <Link to="/">Home</Link>
+      <NumericalNavbar/>
       <Onepoint/>
     </div>
     

@@ -1,11 +1,11 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import NumericalNavbar from '../Navbar';
 import Falseposition from '../components/rootofequation/Falseposition'
 
 export default function FalsepositionPage() {
   return (
     <div>
-      <Link to="/">Home</Link>
+      <NumericalNavbar/>
       <Falseposition/>
     </div>
     

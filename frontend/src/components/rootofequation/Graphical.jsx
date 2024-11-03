@@ -1,23 +1,28 @@
 import { abs, compile, evaluate, floor, log, pow } from "mathjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import History from "./history";
 
-import Plot from 'react-plotly.js'
+import Plot from "react-plotly.js";
 import Table from "react-bootstrap/Table";
-import 'bootstrap/dist/css/bootstrap.min.css';
+import "bootstrap/dist/css/bootstrap.min.css";
+
+const backEndUrl = "http://localhost:3000";
+
 function GraphicalMain(Rangexl, Rangexr, Epsilon, Fn) {
   const fn = compile(Fn);
 
-  let xl = Rangexl, xr = Rangexr, ans;
-  var dataXset = [], dataYset = [];
+  let xl = Rangexl,
+    xr = Rangexr,
+    ans;
+  var dataXset = [],
+    dataYset = [];
   for (let i = xl; i <= xr; i++) {
-
     if (i < 10) {
       dataXset.push(xl);
       dataYset.push(fn.evaluate({ x: xl }));
     }
 
     if (fn.evaluate({ x: xl })) {
-
       xl = i;
       xr = i + 1;
       break;
@@ -28,7 +33,6 @@ function GraphicalMain(Rangexl, Rangexr, Epsilon, Fn) {
     if (iter < 100) {
       dataXset.push(xl);
       dataYset.push(fn.evaluate({ x: xl }));
-
     }
     iter++;
     xl = xl + Epsilon;
@@ -36,19 +40,13 @@ function GraphicalMain(Rangexl, Rangexr, Epsilon, Fn) {
   console.log(xl);
   ans = xl;
   return { ans, dataXset, dataYset, iter };
-
 }
 
-export function graphicalMethod(
-  xStart,
-  xEnd,
-  errorFactor,
-  func
-) {
+export function graphicalMethod(xStart, xEnd, errorFactor, func) {
   const result = { result: 0, iter: 0, iterations: [] };
 
   if (xStart >= xEnd) {
-    result.error = 'xStart must be less than xEnd';
+    result.error = "xStart must be less than xEnd";
     return result;
   }
 
@@ -67,7 +65,7 @@ export function graphicalMethod(
   while (iter < MAX_ITER) {
     iter += 1;
     if (iter == MAX_ITER) {
-      result.error = 'Max iteration reached';
+      result.error = "Max iteration reached";
       break;
     }
 
@@ -99,15 +97,15 @@ export function graphicalMethod(
 
   result.result = x;
   result.iter = iter;
-  
+
   const dataXSet = [];
   const dataYSet = [];
-  for(let i=0; i< result.iterations.length;i++) {
+  for (let i = 0; i < result.iterations.length; i++) {
     dataXSet.push(result.iterations[i].x);
     dataYSet.push(result.iterations[i].y);
   }
 
-  return { ans:x, dataXset: dataXSet, dataYset: dataYSet, iter };
+  return { ans: x, dataXset: dataXSet, dataYset: dataYSet, iter };
 }
 // function(dataXset){
 // return dataXset;
@@ -117,60 +115,102 @@ export function graphicalMethod(
 // }
 function Graphical() {
   const [Ans, setAns] = useState(null);
-  const [FnState, setFn] = useState("");
-  const [Rangexl, setRangexl] = useState("");
-  const [Rangexr, setRangexr] = useState("");
-  const [Epsilon, setEpsilon] = useState("");
+  const [FnState, setFn] = useState("5x-3");
+  const [Rangexl, setRangexl] = useState("0");
+  const [Rangexr, setRangexr] = useState("3");
+  const [Epsilon, setEpsilon] = useState("0.001");
   const [dataX, setdataX] = useState(null);
   const [dataY, setdataY] = useState(null);
   const [iteration, setiteration] = useState(null);
-  function eventHandler(e) {
-    e.preventDefault();
-    console.log(Rangexl);
-    console.log(Rangexr);
+  const [allEquations, setAllEquations] = useState([]);
 
-    const result = graphicalMethod(Number(Rangexl), Number(Rangexr), Number(Epsilon), FnState);
+  async function eventHandler(e) {
+    e.preventDefault();
+    // console.log(Rangexl);
+    // console.log(Rangexr);
+
+    const result = graphicalMethod(
+      Number(Rangexl),
+      Number(Rangexr),
+      Number(Epsilon),
+      FnState
+    );
     setAns(result.ans); // Set the result using setAns
     setdataX(result.dataXset);
     setdataY(result.dataYset);
     setiteration(result.iter);
+
+    //1: create json object for sending to backend.
+    const payload = {
+      function: FnState,
+      start: Rangexl,
+      stop: Rangexr,
+      method: "graphical"
+    };
+
+    //2 create function fetch
+    await fetch(`${backEndUrl}/root-of-equation`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
   }
 
+  useEffect(() => {
+    const getAllData = async () => {
+      const response = await fetch(`${backEndUrl}/root-of-equation`, {
+        method: "GET",
+      });
+
+      const data = await response.json();
+
+      setAllEquations(data.data.filter((element) => element.method == 'graphical'));
+    };
+
+    getAllData();
+  }, []);
+
   return (
-    <div className="Main">
-      <h1>Graphical</h1>
-      <form onSubmit={eventHandler}>
-        <label>f(x)</label>
-        <input
-          type="text"
-          placeholder="Enter the function"
-          value={FnState}
-          onChange={(e) => setFn(e.target.value)}
-        />
-        <p></p>
-        <label>Range</label>
-        <input
-          type="text"
-          value={Rangexl}
-          onChange={(e) => setRangexl(e.target.value)}
-        />
-        <label>,</label>
-        <input
-          type="text"
-          value={Rangexr}
-          onChange={(e) => setRangexr(e.target.value)}
-        />
-        <p></p>
-        <label>Epsilon</label>
-        <input
-          type="text"
-          value={Epsilon}
-          onChange={(e) => setEpsilon(e.target.value)}
-        />
-        <p></p>
-        <button type="submit">Submit</button>
-        <p>Ans is {Ans} and Iteration is {iteration}</p>
-      </form>
+    <div className="Main p-4">
+      <div className="d-flex justify-content-between" style={{height: 300+"px"}}>
+        <div>
+          <h1>Graphical</h1>
+          <form onSubmit={eventHandler}>
+            <label>f(x)</label>
+            <input
+              type="text"
+              placeholder="Enter the function"
+              value={FnState}
+              onChange={(e) => setFn(e.target.value)}
+            />
+            <p></p>
+            <label>Range</label>
+            <input
+              type="text"
+              value={Rangexl}
+              onChange={(e) => setRangexl(e.target.value)}
+            />
+            <label>,</label>
+            <input
+              type="text"
+              value={Rangexr}
+              onChange={(e) => setRangexr(e.target.value)}
+            />
+            <p></p>
+            <label>Epsilon</label>
+            <input
+              type="text"
+              value={Epsilon}
+              onChange={(e) => setEpsilon(e.target.value)}
+            />
+            <p></p>
+            <button type="submit">Submit</button>
+            <p>
+              Ans is {Ans} and Iteration is {iteration}
+            </p>
+          </form>
+        </div>
+        <History allEquations={allEquations}/>
+      </div>
       <div>
         <Plot
           data={[
@@ -183,15 +223,14 @@ function Graphical() {
               transforms: [
                 {
                   type: "sort",
-                }
-              ]
+                },
+              ],
             },
           ]}
           config={{
-            scrollZoom: true
+            scrollZoom: true,
           }}
-          layout={{ width: 1280, height: 450, title: 'Grahpical' }}
-
+          layout={{ width: 1280, height: 450, title: "Grahpical" }}
         />
       </div>
       <Table striped bordered hover size="sm">
@@ -200,21 +239,20 @@ function Graphical() {
             <th>iter</th>
             <th>x</th>
             <th>f(x)</th>
-
           </tr>
         </thead>
         <tbody>
-          {dataX && dataX.map((x, idx) =>
-            <tr key={`${x}-${idx}`}>
-              <td>{idx}</td>
-              <td>{x}</td>
-              <td>{dataY[idx]}</td>
-            </tr>)}
-          
+          {dataX &&
+            dataX.map((x, idx) => (
+              <tr key={`${x}-${idx}`}>
+                <td>{idx}</td>
+                <td>{x}</td>
+                <td>{dataY[idx]}</td>
+              </tr>
+            ))}
         </tbody>
       </Table>
     </div>
   );
-
 }
 export default Graphical;

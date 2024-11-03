@@ -1,8 +1,10 @@
 import { compile } from "mathjs";
-import { useState } from "react";
+import { useEffect,useState } from "react";
 import Plot from 'react-plotly.js'
 import Table from "react-bootstrap/Table";
+import History from "./history";
 
+const backEndUrl = "http://localhost:3000";
 function OnepointMain(Rangexl,Epsilon, Fn){
     const fn=compile(Fn);
     
@@ -42,8 +44,9 @@ function Onepoint(){
     const [dataY,setdataY]=useState(null);
     const [dataErr,setdataErr]=useState(null);
     const [iteration,setiteration]=useState(null);
+    const [allEquations, setAllEquations] = useState([]);
 
-    function eventHandler(e) {
+    async function eventHandler(e) {
         e.preventDefault();
         console.log(Rangexl);
         
@@ -54,38 +57,69 @@ function Onepoint(){
         setdataY(result.dataYset);
         setiteration(result.iter);
         setdataErr(result.dataErrset);
+
+        //Rangexr
+        const payload = {
+          function: FnState,
+          start: Rangexl,
+
+          method: "onepoint",
+        };
+
+        await fetch(`${backEndUrl}/root-of-equation`, {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
   }
   
+  useEffect(() => {
+    const getAllData = async () => {
+      const response = await fetch(`${backEndUrl}/root-of-equation`, {
+        method: "GET",
+      });
+
+      const data = await response.json();
+      
+      setAllEquations(data.data.filter((element) => element.method == 'onepoint'));
+    };
+
+    getAllData();
+  }, []);
   return (
     <div className="Main">
-      <h1>Onepoint</h1>
-      <form onSubmit={eventHandler}>
-        <label>f(x)</label>
-        <input
-          type="text"
-          placeholder="Enter the function"
-          value={FnState}
-          onChange={(e) => setFn(e.target.value)}
-        />
-        <p></p>
-        <label>Start</label>
-        <input
-          type="text"
-          value={Rangexl}
-          onChange={(e) => setRangexl(e.target.value)}
-        />
-        
-        <p></p>
-        <label>Epsilon</label>
-        <input
-          type="text"
-          value={Epsilon}
-          onChange={(e) => setEpsilon(e.target.value)}
-        />
-        <p></p>
-        <button type="submit">Submit</button>
-        <p>Ans is {Ans} and iteration is {iteration}</p>
-      </form>
+      <div className="d-flex justify-content-between" style={{height: 300+"px"}}>
+        <div>
+          <h1>Onepoint</h1>
+          <form onSubmit={eventHandler}>
+            <label>f(x)</label>
+            <input
+              type="text"
+              placeholder="Enter the function"
+              value={FnState}
+              onChange={(e) => setFn(e.target.value)}
+            />
+            <p></p>
+            <label>Start</label>
+            <input
+              type="text"
+              value={Rangexl}
+              onChange={(e) => setRangexl(e.target.value)}
+            />
+          
+            <p></p>
+            <label>Epsilon</label>
+            <input
+              type="text"
+              value={Epsilon}
+              onChange={(e) => setEpsilon(e.target.value)}
+            />
+            <p></p>
+            <button type="submit">Submit</button>
+            <p>Ans is {Ans} and iteration is {iteration}</p>
+          </form>
+        </div>
+        <History allEquations={allEquations}/>
+      </div>
       <div>
       <Plot 
         data={[

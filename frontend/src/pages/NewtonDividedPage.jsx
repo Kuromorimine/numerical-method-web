@@ -1,11 +1,11 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import NumericalNavbar from '../Navbar';
 import NewtonDivided from '../components/interpolation/NewtonDivided'
 
 export default function NewtonDividedPage() {
   return (
     <div>
-      <Link to="/">Home</Link>
+      <NumericalNavbar/>
       <NewtonDivided/>
     </div>
   )
