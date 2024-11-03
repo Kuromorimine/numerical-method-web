@@ -1,9 +1,6 @@
 import React from 'react'
 import NumericalNavbar from '../Navbar';;
 import "../styles/home.css"
-import { PrismaClient } from '@prisma/client';
-import { Link } from 'react-router-dom'
-
 
 // const menu = [
 //     { label: "Graphical", link: "/Graphical" },
@@ -31,8 +28,6 @@ import { Link } from 'react-router-dom'
 //     { label: "CompositeSimpsonRule",link:"/CompositeSimpson"}
 
 // ];
-
-const prisma = new PrismaClient();
 
 export default function Home() {
     
