@@ -37,9 +37,14 @@ export default function Home() {
             <div className="main">
                 <NumericalNavbar/>
                 <div>
-                    {menu.map((menu, index) => (
-                        <Link to={menu.link}>{menu.label}</Link>
-                    ))}
+                    {menu.map((menu, index) => {
+                        return (
+                            <>
+                                <Link to={menu.link}>{menu.label}</Link>
+                                <br />
+                            </>
+                        )
+})}
                 </div>
             </div>
         
