@@ -1,6 +1,7 @@
 import React from 'react'
 import NumericalNavbar from './Navbar';;
 import "../styles/home.css"
+import { Link } from 'react-router-dom';
 
 const menu = [
     { label: "Graphical", link: "/Graphical" },
